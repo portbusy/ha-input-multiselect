@@ -1,0 +1,11 @@
+{
+  "domain": "input_multiselect",
+  "name": "Input Multiselect",
+  "version": "1.0.0",
+  "documentation": "https://github.com/portbusy/ha-input-multiselect",
+  "dependencies": [],
+  "codeowners": ["@portbusy"],
+  "requirements": [],
+  "iot_class": "local_push",
+  "config_flow": true
+}

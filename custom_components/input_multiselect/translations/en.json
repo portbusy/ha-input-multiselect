@@ -1,0 +1,21 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Create Input Multiselect",
+        "description": "Define the options for your multiselect helper. Enter one option per line or separate them by commas.",
+        "data": {
+          "name": "Name",
+          "icon": "Icon",
+          "options": "Options (comma-separated or multiline)"
+        }
+      }
+    },
+    "error": {
+      "empty_options": "You must provide at least one valid option."
+    },
+    "abort": {
+      "already_configured": "This device is already configured."
+    }
+  }
+}
