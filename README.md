@@ -4,7 +4,7 @@ This is a custom component for Home Assistant that introduces a new helper entit
 
 While the native `input_select` only allows you to pick a single option from a dropdown, this component lets you select multiple options simultaneously. It's perfect for scenarios like selecting which rooms a robot vacuum should clean, choosing multiple media players to group, or picking which days of the week an automation should run.
 
-> **Note:** This component only handles the backend logic (creating the entities, storing the state, and exposing the actions). To actually interact with these entities via a proper UI dropdown with checkboxes on your Lovelace dashboard, you will also need the companion frontend card: **[Input Multiselect Card](https://github.com/tuo-utente/input-multiselect-card)** *(replace with your actual link later)*.
+> **Note:** This component only handles the backend logic (creating the entities, storing the state, and exposing the actions). To actually interact with these entities via a proper UI dropdown with checkboxes on your Lovelace dashboard, you will also need the companion frontend card: **[Input Multiselect Card](https://github.com/portbusy/ha-input-multiselect-card)** *(replace with your actual link later)*.
 
 ## Installation
 
