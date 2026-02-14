@@ -55,15 +55,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Initialize a config entry instance generated from the UI."""
     component: EntityComponent = hass.data[DOMAIN]
 
+    options = entry.options.get(CONF_OPTIONS, entry.data.get(CONF_OPTIONS, []))
+
     entity = InputMultiSelect(
         unique_id=entry.entry_id,
         name=entry.data["name"],
-        options=entry.data[CONF_OPTIONS],
+        options=options,
         icon=entry.data.get("icon"),
     )
 
     await component.async_add_entities([entity])
+
+    entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+
     return True
+
+
+async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Reload the entity."""
+    await hass.config_entries.async_reload(entry.entry_id)
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
