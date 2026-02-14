@@ -59,15 +59,11 @@ class InputMultiselectConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             config_entry: config_entries.ConfigEntry,
     ) -> config_entries.OptionsFlow:
         """Create the options flow."""
-        return InputMultiselectOptionsFlowHandler(config_entry)
+        return InputMultiselectOptionsFlowHandler()
 
 
 class InputMultiselectOptionsFlowHandler(config_entries.OptionsFlow):
-    """Gestisce la modifica delle opzioni dopo la creazione."""
-
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Initialize options flow."""
-        self.config_entry = config_entry
+    """Handles the options flow for Input Multiselect via the HA UI."""
 
     async def async_step_init(
             self, user_input: dict[str, Any] | None = None
