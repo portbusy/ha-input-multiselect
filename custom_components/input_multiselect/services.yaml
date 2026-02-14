@@ -1,0 +1,41 @@
+set_options:
+  name: Set options
+  description: Completely overwrites the currently selected options.
+  target:
+    entity:
+      integration: input_multiselect
+  fields:
+    options:
+      name: Options
+      description: List of options to set (e.g., ['Kitchen', 'Living Room']).
+      required: true
+      selector:
+        object:
+
+add_options:
+  name: Add options
+  description: Adds new options to the currently selected ones.
+  target:
+    entity:
+      integration: input_multiselect
+  fields:
+    options:
+      name: Options
+      description: List of options to add.
+      required: true
+      selector:
+        object:
+
+remove_options:
+  name: Remove options
+  description: Removes specific options from the currently selected ones.
+  target:
+    entity:
+      integration: input_multiselect
+  fields:
+    options:
+      name: Options
+      description: List of options to remove.
+      required: true
+      selector:
+        object:
