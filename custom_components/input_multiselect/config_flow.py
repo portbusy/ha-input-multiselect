@@ -76,10 +76,8 @@ class InputMultiselectOptionsFlowHandler(config_entries.OptionsFlow):
                 for opt in raw_options.replace("\n", ",").split(",")
                 if opt.strip()
             ]
-            # Salva le nuove opzioni
             return self.async_create_entry(title="", data={CONF_OPTIONS: options_list})
 
-        # Recupera le opzioni attuali per mostrarle precompilate
         current_options = self.config_entry.options.get(
             CONF_OPTIONS, self.config_entry.data.get(CONF_OPTIONS, [])
         )

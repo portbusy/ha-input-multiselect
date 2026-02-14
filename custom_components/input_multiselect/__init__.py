@@ -25,11 +25,9 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Initialize the Input Multiselect component and register entity services."""
-    # EntityComponent handles the domain logic, polling, and service dispatching
     component = EntityComponent(_LOGGER, DOMAIN, hass)
     hass.data[DOMAIN] = component
 
-    # Registering entity-level services automatically adds target selectors (entity_id)
     component.async_register_entity_service(
         SERVICE_SET_OPTIONS,
         {vol.Required(CONF_OPTIONS): vol.All(cv.ensure_list, [cv.string])},
