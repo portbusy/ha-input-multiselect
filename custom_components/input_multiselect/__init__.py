@@ -6,7 +6,7 @@ import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers.entity import RestoreEntity
+from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.typing import ConfigType
 
@@ -70,7 +70,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Handle removal of an entry from the integration UI."""
     component: EntityComponent = hass.data[DOMAIN]
 
-    # Locate the entity by unique_id to safely remove it from the state machine
     entity = next((ent for ent in component.entities if ent.unique_id == entry.entry_id), None)
     if entity:
         await component.async_remove_entity(entity.entity_id)
