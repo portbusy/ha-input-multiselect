@@ -142,30 +142,34 @@ class InputMultiSelect(RestoreEntity):
         return parsed
 
     async def async_set_options(self, options: list[str] = None) -> None:
-        """Service callback: Override the entire selection array."""
+        """Service callback: Override the entire options array and reset selection."""
         if options is None:
             options = []
 
         parsed_options = self._parse_options(options)
-        valid_options = [opt for opt in parsed_options if opt in self._options]
-
-        self._current_selection = valid_options
+        
+        self._options = parsed_options
+        self._current_selection = [
+            opt for opt in self._current_selection if opt in self._options
+        ]
         self.async_write_ha_state()
 
     async def async_add_options(self, options: list[str]) -> None:
-        """Service callback: Append options to the existing array."""
+        """Service callback: Append options to the available options array."""
         parsed_options = self._parse_options(options)
 
         for opt in parsed_options:
-            if opt in self._options and opt not in self._current_selection:
-                self._current_selection.append(opt)
+            if opt not in self._options:
+                self._options.append(opt)
         self.async_write_ha_state()
 
     async def async_remove_options(self, options: list[str]) -> None:
-        """Service callback: Drop specific options from the array."""
+        """Service callback: Drop specific options from the available options array."""
         parsed_options = self._parse_options(options)
 
         for opt in parsed_options:
+            if opt in self._options:
+                self._options.remove(opt)
             if opt in self._current_selection:
                 self._current_selection.remove(opt)
         self.async_write_ha_state()
