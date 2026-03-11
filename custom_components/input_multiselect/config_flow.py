@@ -4,6 +4,7 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.helpers import selector
+from homeassistant.core import callback
 
 from .const import DOMAIN, CONF_OPTIONS
 
@@ -51,24 +52,28 @@ class InputMultiselectConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user", data_schema=schema, errors=errors
         )
 
-    from homeassistant.core import callback
-
     @staticmethod
     @callback
     def async_get_options_flow(
             config_entry: config_entries.ConfigEntry,
     ) -> config_entries.OptionsFlow:
         """Create the options flow."""
-        return InputMultiselectOptionsFlowHandler()
+        return InputMultiselectOptionsFlowHandler(config_entry)
 
 
 class InputMultiselectOptionsFlowHandler(config_entries.OptionsFlow):
     """Handles the options flow for Input Multiselect via the HA UI."""
 
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        """Initialize options flow."""
+        self.config_entry = config_entry
+
     async def async_step_init(
             self, user_input: dict[str, Any] | None = None
     ) -> config_entries.ConfigFlowResult:
         """Handles options window."""
+        errors: dict[str, str] = {}
+
         if user_input is not None:
             raw_options = user_input.get(CONF_OPTIONS, "")
             options_list = [
@@ -76,7 +81,11 @@ class InputMultiselectOptionsFlowHandler(config_entries.OptionsFlow):
                 for opt in raw_options.replace("\n", ",").split(",")
                 if opt.strip()
             ]
-            return self.async_create_entry(title="", data={CONF_OPTIONS: options_list})
+
+            if not options_list:
+                errors["base"] = "empty_options"
+            else:
+                return self.async_create_entry(title="", data={CONF_OPTIONS: options_list})
 
         current_options = self.config_entry.options.get(
             CONF_OPTIONS, self.config_entry.data.get(CONF_OPTIONS, [])
@@ -94,4 +103,4 @@ class InputMultiselectOptionsFlowHandler(config_entries.OptionsFlow):
             }
         )
 
-        return self.async_show_form(step_id="init", data_schema=schema)
+        return self.async_show_form(step_id="init", data_schema=schema, errors=errors)
