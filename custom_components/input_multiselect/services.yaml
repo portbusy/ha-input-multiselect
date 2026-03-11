@@ -10,7 +10,8 @@ set_options:
       description: List of options to set (e.g., ['Kitchen', 'Living Room'] or 'Kitchen, Living Room').
       required: false
       selector:
-        object:
+        text:
+          multiple: true
 
 add_options:
   name: Add options
@@ -24,7 +25,8 @@ add_options:
       description: List of options to add.
       required: true
       selector:
-        object:
+        text:
+          multiple: true
 
 remove_options:
   name: Remove options
@@ -38,4 +40,5 @@ remove_options:
       description: List of options to remove.
       required: true
       selector:
-        object:
+        text:
+          multiple: true
