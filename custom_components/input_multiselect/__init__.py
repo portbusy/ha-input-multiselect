@@ -158,18 +158,25 @@ class InputMultiSelect(RestoreEntity):
         """Service callback: Append options to the available options array."""
         parsed_options = self._parse_options(options)
 
+        # Force a new list reference so HA detects the state change
+        new_options = list(self._options)
         for opt in parsed_options:
-            if opt not in self._options:
-                self._options.append(opt)
+            if opt not in new_options:
+                new_options.append(opt)
+        
+        self._options = new_options
         self.async_write_ha_state()
 
     async def async_remove_options(self, options: list[str]) -> None:
         """Service callback: Drop specific options from the available options array."""
         parsed_options = self._parse_options(options)
 
-        for opt in parsed_options:
-            if opt in self._options:
-                self._options.remove(opt)
-            if opt in self._current_selection:
-                self._current_selection.remove(opt)
+        # Force new list references so HA detects the state change
+        self._options = [
+            opt for opt in self._options if opt not in parsed_options
+        ]
+        self._current_selection = [
+            opt for opt in self._current_selection if opt not in parsed_options
+        ]
+        
         self.async_write_ha_state()
