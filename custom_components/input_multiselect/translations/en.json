@@ -16,6 +16,20 @@
     },
     "abort": {
       "already_configured": "This device is already configured."
+    },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure Input Multiselect",
+        "description": "Modify the available options. Enter one per line or separate by commas.",
+        "data": {
+          "options": "Options"
+        }
+      }
+    },
+    "error": {
+      "empty_options": "You must provide at least one valid option."
     }
+  }
   }
 }
