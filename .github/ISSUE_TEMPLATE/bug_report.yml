@@ -1,0 +1,69 @@
+name: Bug Report
+description: Create a report to help us improve the integration
+title: '[BUG] '
+labels: ['bug']
+assignees: ['portbusy']
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! 
+        Before you submit, please make sure you are running the **latest version** of this integration and you have **restarted Home Assistant** since installing/updating.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submission checks
+      options:
+        - label: I am running the latest version of the integration.
+          required: true
+        - label: I have completely restarted Home Assistant Core.
+          required: true
+        - label: I searched existing issues and couldn't find a similar one.
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description of the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe what is happening...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: What should have happened instead?
+    validations:
+      required: true
+
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant Version
+      description: What version of Home Assistant Core are you running? (e.g. 2024.4.1)
+      placeholder: 2024.x.x
+    validations:
+      required: true
+
+  - type: input
+    id: integration_version
+    attributes:
+      label: Input Multiselect Version
+      description: What version of this integration is installed via HACS?
+      placeholder: v1.1.1
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output or error traceback.
+      render: shell
+    validations:
+      required: false

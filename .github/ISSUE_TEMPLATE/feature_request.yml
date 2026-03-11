@@ -1,0 +1,46 @@
+name: Feature Request
+description: Suggest an idea for this integration
+title: '[FR] '
+labels: ['enhancement']
+assignees: ['portbusy']
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new idea! Please provide as much detail as possible to help understand your feature request.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Is your feature request related to a problem?
+      description: A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+      placeholder: Elaborate on the problem you are trying to solve...
+    validations:
+      required: false
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the solution you'd like
+      description: A clear and concise description of what you want to happen.
+      placeholder: What new feature or behavior would you like to see?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Describe alternatives you've considered
+      description: A clear and concise description of any alternative solutions or features you've considered.
+    validations:
+      required: false
+
+  - type: textarea
+    id: usecase
+    attributes:
+      label: Real-world Use Case
+      description: Explain how you would use this feature in an automation or in your specific Home Assistant setup. This helps me understand the *why* behind your request!
+      placeholder: In my dashboard/automation, I would use this to...
+    validations:
+      required: true
