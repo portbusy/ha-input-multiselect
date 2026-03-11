@@ -32,7 +32,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
     component.async_register_entity_service(
         SERVICE_SET_OPTIONS,
-        {vol.Required(CONF_OPTIONS): vol.All(cv.ensure_list, [cv.string])},
+        {vol.Optional(CONF_OPTIONS, default=[]): vol.All(cv.ensure_list, [cv.string])},
         "async_set_options",
     )
 
@@ -107,7 +107,7 @@ class InputMultiSelect(RestoreEntity):
     def state(self) -> str:
         """Return the primary state.
 
-        HA strictly limits state strings to 255 characters. 
+        HA strictly limits state strings to 255 characters.
         Returning the exact array could easily overflow this limit.
         We return the selection count, exposing the actual array via attributes.
         """
@@ -133,22 +133,39 @@ class InputMultiSelect(RestoreEntity):
                 opt for opt in restored_selection if opt in self._options
             ]
 
-    async def async_set_options(self, options: list[str]) -> None:
+    def _parse_options(self, options: list[str]) -> list[str]:
+        """Helper to flatten and parse comma-separated string options."""
+        parsed = []
+        for opt in options:
+            # Dividiamo l'opzione per virgola nel caso in cui l'utente abbia passato una stringa singola
+            parsed.extend([o.strip() for o in opt.split(",") if o.strip()])
+        return parsed
+
+    async def async_set_options(self, options: list[str] = None) -> None:
         """Service callback: Override the entire selection array."""
-        valid_options = [opt for opt in options if opt in self._options]
+        if options is None:
+            options = []
+
+        parsed_options = self._parse_options(options)
+        valid_options = [opt for opt in parsed_options if opt in self._options]
+
         self._current_selection = valid_options
         self.async_write_ha_state()
 
     async def async_add_options(self, options: list[str]) -> None:
         """Service callback: Append options to the existing array."""
-        for opt in options:
+        parsed_options = self._parse_options(options)
+
+        for opt in parsed_options:
             if opt in self._options and opt not in self._current_selection:
                 self._current_selection.append(opt)
         self.async_write_ha_state()
 
     async def async_remove_options(self, options: list[str]) -> None:
         """Service callback: Drop specific options from the array."""
-        for opt in options:
+        parsed_options = self._parse_options(options)
+
+        for opt in parsed_options:
             if opt in self._current_selection:
                 self._current_selection.remove(opt)
         self.async_write_ha_state()
