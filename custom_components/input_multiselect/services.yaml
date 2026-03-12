@@ -30,7 +30,7 @@ add_options:
 
 remove_options:
   name: Remove options
-  description: Removes specific options from the currently selected ones.
+  description: Removes specific options from the available options pool.
   target:
     entity:
       integration: input_multiselect
@@ -39,6 +39,21 @@ remove_options:
       name: Options
       description: List of options to remove.
       required: true
+      selector:
+        text:
+          multiple: true
+
+set_value:
+  name: Set value (selection)
+  description: Overwrites the active selection of the multiselect entity. Options must exist in the pool.
+  target:
+    entity:
+      integration: input_multiselect
+  fields:
+    options:
+      name: Value
+      description: List of options to select (e.g., ['Kitchen', 'Living Room']). Leave empty to clear selection.
+      required: false
       selector:
         text:
           multiple: true

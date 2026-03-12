@@ -18,6 +18,7 @@ from .const import (
     SERVICE_SET_OPTIONS,
     SERVICE_ADD_OPTIONS,
     SERVICE_REMOVE_OPTIONS,
+    SERVICE_SET_VALUE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -46,6 +47,12 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         SERVICE_REMOVE_OPTIONS,
         {vol.Required(CONF_OPTIONS): vol.All(cv.ensure_list, [cv.string])},
         "async_remove_options",
+    )
+
+    component.async_register_entity_service(
+        SERVICE_SET_VALUE,
+        {vol.Optional(CONF_OPTIONS, default=[]): vol.All(cv.ensure_list, [cv.string])},
+        "async_set_value",
     )
 
     return True
@@ -151,6 +158,19 @@ class InputMultiSelect(RestoreEntity):
         self._options = parsed_options
         self._current_selection = [
             opt for opt in self._current_selection if opt in self._options
+        ]
+        self.async_write_ha_state()
+
+    async def async_set_value(self, options: list[str] = None) -> None:
+        """Service callback: Override the active selection."""
+        if options is None:
+            options = []
+
+        parsed_options = self._parse_options(options)
+        
+        # Only select options that actually exist in the pool
+        self._current_selection = [
+            opt for opt in parsed_options if opt in self._options
         ]
         self.async_write_ha_state()
 
