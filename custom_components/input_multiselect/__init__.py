@@ -133,14 +133,32 @@ class InputMultiSelect(RestoreEntity):
         await super().async_added_to_hass()
         state = await self.async_get_last_state()
 
-        if state and ATTR_SELECTED_OPTIONS in state.attributes:
-            restored_selection = state.attributes[ATTR_SELECTED_OPTIONS]
-            # Sanitize restored options against the current configured options
-            self._current_selection = [
-                opt for opt in restored_selection if opt in self._options
-            ]
+        if state:
+            # Restore the options pool from the last known state so that runtime
+            # changes made via services (add_options, remove_options, set_options)
+            # survive a HA restart and are not silently reverted to the config
+            # entry values.
+            if ATTR_OPTIONS in state.attributes:
+                restored_options = state.attributes[ATTR_OPTIONS]
+                if restored_options:
+                    # TODO: persisting runtime option changes back to the config entry
+                    # (via hass.config_entries.async_update_entry) would make the config
+                    # entry the single source of truth and remove the need for this
+                    # state restore. As-is, if the user edits options via the UI in the
+                    # same session where services also modified _options, the UI reload
+                    # triggers async_added_to_hass and the pre-UI runtime state wins,
+                    # silently discarding the UI change.
+                    self._options = list(restored_options)
 
-    def _parse_options(self, options: list[str]) -> list[str]:
+            if ATTR_SELECTED_OPTIONS in state.attributes:
+                restored_selection = state.attributes[ATTR_SELECTED_OPTIONS]
+                # Sanitize restored selection against the restored options pool
+                self._current_selection = [
+                    opt for opt in restored_selection if opt in self._options
+                ]
+
+    @staticmethod
+    def _parse_options(options: list[str]) -> list[str]:
         """Helper to flatten and parse comma-separated string options."""
         parsed = []
         for opt in options:
@@ -149,13 +167,18 @@ class InputMultiSelect(RestoreEntity):
         return parsed
 
     async def async_set_options(self, options: list[str] = None) -> None:
-        """Service callback: Override the entire options array and reset selection."""
+        """Service callback: Override the entire options pool. Selection is pruned to valid options."""
         if options is None:
             options = []
 
         parsed_options = self._parse_options(options)
-        
-        self._options = parsed_options
+
+        # Guard: an empty list would silently wipe all options (same effect as
+        # remove_options).  When no options are provided we leave the pool
+        # untouched and only drop selections that are no longer valid.
+        if parsed_options:
+            self._options = parsed_options
+
         self._current_selection = [
             opt for opt in self._current_selection if opt in self._options
         ]
