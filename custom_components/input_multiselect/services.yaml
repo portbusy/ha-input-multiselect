@@ -1,6 +1,6 @@
 set_options:
   name: Set options
-  description: Completely overwrites the currently selected options. (Leave empty to clear all)
+  description: Completely replaces the available options pool. Leave empty to keep existing options unchanged.
   target:
     entity:
       integration: input_multiselect
@@ -15,7 +15,7 @@ set_options:
 
 add_options:
   name: Add options
-  description: Adds new options to the currently selected ones.
+  description: Adds new options to the available options pool.
   target:
     entity:
       integration: input_multiselect
