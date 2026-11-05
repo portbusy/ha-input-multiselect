@@ -4,7 +4,7 @@ from typing import Any
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.entity_component import EntityComponent
@@ -156,6 +156,11 @@ class InputMultiSelect(RestoreEntity):
                 self._current_selection = [
                     opt for opt in restored_selection if opt in self._options
                 ]
+
+    @callback
+    def async_entity_id_changed(self, old_entity_id: str) -> None:
+        """Opt in to in-place entity_id changes."""
+        super().async_entity_id_changed(old_entity_id)
 
     @staticmethod
     def _parse_options(options: list[str]) -> list[str]:

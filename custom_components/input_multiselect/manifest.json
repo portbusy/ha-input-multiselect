@@ -1,6 +1,9 @@
 {
   "domain": "input_multiselect",
   "name": "Input Multiselect",
+  "categories": [
+    "helpers.store_value"
+  ],
   "codeowners": [
     "@portbusy"
   ],
