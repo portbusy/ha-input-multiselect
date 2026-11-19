@@ -19,6 +19,8 @@ from .const import (
     SERVICE_ADD_OPTIONS,
     SERVICE_REMOVE_OPTIONS,
     SERVICE_SET_VALUE,
+    SERVICE_SELECT_OPTIONS,
+    SERVICE_DESELECT_OPTIONS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,6 +55,18 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         SERVICE_SET_VALUE,
         {vol.Optional(CONF_OPTIONS, default=[]): vol.All(cv.ensure_list, [cv.string])},
         "async_set_value",
+    )
+
+    component.async_register_entity_service(
+        SERVICE_SELECT_OPTIONS,
+        {vol.Required(CONF_OPTIONS): vol.All(cv.ensure_list, [cv.string])},
+        "async_select_options",
+    )
+
+    component.async_register_entity_service(
+        SERVICE_DESELECT_OPTIONS,
+        {vol.Required(CONF_OPTIONS): vol.All(cv.ensure_list, [cv.string])},
+        "async_deselect_options",
     )
 
     return True
@@ -199,6 +213,27 @@ class InputMultiSelect(RestoreEntity):
         # Only select options that actually exist in the pool
         self._current_selection = [
             opt for opt in parsed_options if opt in self._options
+        ]
+        self.async_write_ha_state()
+
+    async def async_select_options(self, options: list[str]) -> None:
+        """Service callback: Add options to the active selection without overwriting it."""
+        parsed_options = self._parse_options(options)
+
+        new_selection = list(self._current_selection)
+        for opt in parsed_options:
+            if opt in self._options and opt not in new_selection:
+                new_selection.append(opt)
+
+        self._current_selection = new_selection
+        self.async_write_ha_state()
+
+    async def async_deselect_options(self, options: list[str]) -> None:
+        """Service callback: Remove options from the active selection, keeping them in the pool."""
+        parsed_options = self._parse_options(options)
+
+        self._current_selection = [
+            opt for opt in self._current_selection if opt not in parsed_options
         ]
         self.async_write_ha_state()
 

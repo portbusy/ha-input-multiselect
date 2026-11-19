@@ -57,3 +57,33 @@ set_value:
       selector:
         text:
           multiple: true
+
+select_options:
+  name: Select options
+  description: Adds options to the active selection without overwriting it. Options must exist in the pool.
+  target:
+    entity:
+      integration: input_multiselect
+  fields:
+    options:
+      name: Options
+      description: List of options to select.
+      required: true
+      selector:
+        text:
+          multiple: true
+
+deselect_options:
+  name: Deselect options
+  description: Removes options from the active selection. The options stay in the pool.
+  target:
+    entity:
+      integration: input_multiselect
+  fields:
+    options:
+      name: Options
+      description: List of options to deselect.
+      required: true
+      selector:
+        text:
+          multiple: true
