@@ -47,21 +47,49 @@ When writing templates for your automations, you should read from the `selected_
 
 ## Available Actions
 
-This integration exposes the following actions that you can call from your scripts and automations:
+This integration exposes the following actions that you can call from your scripts, automations and dashboard cards.
+
+Actions on the **selection** (`selected_options`):
 
 | Action | Description | Payload |
 | :--- | :--- | :--- |
-| `input_multiselect.set_options` | Overwrites the current selection entirely. | `options`: List of strings |
-| `input_multiselect.add_options` | Adds new items to the existing selection. | `options`: List of strings |
-| `input_multiselect.remove_options` | Removes specific items from the selection. | `options`: List of strings |
+| `input_multiselect.set_value` | Overwrites the current selection entirely. Leave empty to clear it. | `options`: List of strings |
+| `input_multiselect.select_options` | Adds items to the current selection. | `options`: List of strings |
+| `input_multiselect.deselect_options` | Removes items from the current selection. | `options`: List of strings |
+
+Only items that exist in the options pool can be selected.
+
+Actions on the **options pool** (`options`):
+
+| Action | Description | Payload |
+| :--- | :--- | :--- |
+| `input_multiselect.set_options` | Replaces the options pool entirely. Selected items no longer in the pool are deselected. | `options`: List of strings |
+| `input_multiselect.add_options` | Adds new items to the options pool. | `options`: List of strings |
+| `input_multiselect.remove_options` | Removes items from the options pool (and from the selection). | `options`: List of strings |
 
 ### Action Example
 
 ```yaml
-action: input_multiselect.add_options
+action: input_multiselect.select_options
 target:
   entity_id: input_multiselect.rooms_to_clean
 data:
   options:
     - Kitchen
     - Hallway
+```
+
+### Dashboard card example
+
+Inside a card's `tap_action`, use `perform-action`:
+
+```yaml
+tap_action:
+  action: perform-action
+  perform_action: input_multiselect.select_options
+  target:
+    entity_id: input_multiselect.rooms_to_clean
+  data:
+    options:
+      - Kitchen
+```
